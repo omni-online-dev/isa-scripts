@@ -65,6 +65,75 @@ export function normalizeTreatment(raw: string): NormalizedTreatment | null {
   return { key: match[1], channel };
 }
 
+/** Nombres de tratamiento dentro de un texto libre, sobre el texto original. */
+const TREATMENT_WORDS: Array<[pattern: RegExp, key: TreatmentKey]> = [
+  [/\bimplantes?\b/gi, "implantes"],
+  [/\bortodoncia\b/gi, "ortodoncia"],
+  [/\bcari+l+as\b/gi, "carillas"],
+  [/\bblanqueamiento\b/gi, "blanqueamiento"],
+  [/\best[eé]tica\b/gi, "estetica"],
+  [/\bapnea(\s+del\s+sue[nñ]o)?/gi, "apnea"],
+];
+
+export interface TreatmentMention {
+  /** Tratamientos nombrados, sin repetir y en orden de aparición en el catálogo. */
+  treatments: TreatmentKey[];
+  /** Lo que queda al quitar los tratamientos y los conectores ("Valladolid"). */
+  rest: string;
+}
+
+/**
+ * Busca tratamientos en un texto corto de la ficha.
+ * "Implantes y Carillas Valladolid" → { treatments: [implantes, carillas], rest: "Valladolid" }.
+ */
+export function findTreatments(text: string): TreatmentMention {
+  let rest = String(text ?? "");
+  const treatments: TreatmentKey[] = [];
+  for (const [pattern, key] of TREATMENT_WORDS) {
+    pattern.lastIndex = 0;
+    if (pattern.test(rest)) {
+      treatments.push(key);
+      rest = rest.replace(pattern, " ");
+    }
+  }
+  rest = rest
+    .replace(/(^|\s)[ye](?=\s|$)/gi, " ")
+    .replace(/^[\s\-–:,.]+|[\s\-–:,.]+$/g, "")
+    .replace(/\s+/g, " ");
+  return { treatments, rest };
+}
+
+/** Número de fila de un hipervínculo a una celda: "#gid=1&range=A69", "#'Horarios '!A69". */
+export function parseAnchorRow(link: string | null | undefined): number | null {
+  const match = /(?:range=|!)\$?[A-Za-z]+\$?(\d+)/.exec(String(link ?? ""));
+  return match ? Number(match[1]) : null;
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/**
+ * Fecha de Activos a ISO. Acepta el número de serie de la hoja (46235),
+ * día/mes/año y el propio formato ISO. null si está vacía o no se entiende.
+ */
+export function parseMasterDate(raw: unknown): string | null {
+  const text = String(raw ?? "").trim();
+  if (!text) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+  if (/^\d{4,6}(\.\d+)?$/.test(text)) {
+    // Las hojas de cálculo cuentan días desde el 30/12/1899.
+    const date = new Date(Date.UTC(1899, 11, 30) + Math.floor(Number(text)) * 86_400_000);
+    return date.toISOString().slice(0, 10);
+  }
+  const dmy = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{2}|\d{4})$/.exec(text);
+  if (dmy) {
+    const day = Number(dmy[1]);
+    const month = Number(dmy[2]);
+    const year = Number(dmy[3]!.length === 2 ? `20${dmy[3]}` : dmy[3]);
+    if (day >= 1 && day <= 31 && month >= 1 && month <= 12) return `${year}-${pad(month)}-${pad(day)}`;
+  }
+  return null;
+}
+
 const STATUS_ALIASES: Record<string, TreatmentStatus> = {
   activa: "activa",
   "pausa temporal": "pausa_temporal",

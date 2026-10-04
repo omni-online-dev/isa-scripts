@@ -129,7 +129,7 @@ export const FICHA_LABELS: ReadonlyArray<{ label: FichaLabel; pattern: RegExp }>
   { label: "valuePoints", pattern: /^puntos? de valor\b/ },
   { label: "script", pattern: /^script\b/ },
   { label: "qualificationHeader", pattern: /^criterios de financiacion\b/ },
-  { label: "mbFormHeader", pattern: /^(criterios para formulario mb|informacion para el mb)\b/ },
+  { label: "mbFormHeader", pattern: /^(criterios para formulario|informacion para el mb)\b/ },
   { label: "dni", pattern: /^dni\s*:/ },
   { label: "nie", pattern: /^nie\s*:/ },
   { label: "pasaporte", pattern: /^pasaporte\s*:/ },

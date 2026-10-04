@@ -23,7 +23,8 @@ export const ISSUE_CODES = [
   "missing_address",
   "missing_schedule",
   "unrecognized_label",
-  "treatment_without_section",
+  "treatment_not_in_activos",
+  "duplicate_clinic",
   "invalid_clinic",
 ] as const;
 export const IssueCodeSchema = z.enum(ISSUE_CODES);

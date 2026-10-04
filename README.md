@@ -30,4 +30,7 @@ npm run build
 | WP-02 Andamiaje | Hecho |
 | WP-03 Esquemas, lista blanca y diccionario de etiquetas | Hecho (pendiente de revisión) |
 | WP-01 Provisión de Google Cloud y Firebase | Hecho, salvo App Hosting y Authentication |
-| WP-04 en adelante | Pendiente |
+| WP-04 Fixtures anonimizadas de la Master | Hecho (la salida de referencia de la app actual llega con WP-07) |
+| WP-05 Parser de Activos | Hecho |
+| WP-06 Parser de fichas | Hecho |
+| WP-07 en adelante | Pendiente |

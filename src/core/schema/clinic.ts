@@ -17,8 +17,8 @@ const YesNo = z.boolean().nullable();
 
 /** Una fila de la tabla de horarios de la ficha (columnas B–D). */
 export const ScheduleRowSchema = z.object({
-  /** Sede, en fichas con varias. null = sede única. */
-  location: OptionalText,
+  /** Sede o condición del bloque de horario ("Los Alisios", "Pacientes con DNI"). */
+  group: OptionalText,
   /** Texto de días tal como está en la ficha: "Lunes y Miércoles". */
   days: z.string().trim().min(1),
   /** Franja: "10:00 a 13:30 / 16:00 a 19:30". */
@@ -35,6 +35,16 @@ export const PeriodSchema = z.object({
 });
 export type Period = z.infer<typeof PeriodSchema>;
 
+/** Criterios de financiación por tipo de documento. */
+export const QualificationSchema = z.object({
+  dni: OptionalText,
+  nie: OptionalText,
+  pasaporte: OptionalText,
+  /** Texto cuando no se cualifica por documento ("No cualificamos, solo confirmar…"). */
+  note: OptionalText,
+});
+export type Qualification = z.infer<typeof QualificationSchema>;
+
 /** Datos de una clínica para un tratamiento concreto. */
 export const ClinicTreatmentSchema = z.object({
   status: TreatmentStatusSchema,
@@ -46,22 +56,14 @@ export const ClinicTreatmentSchema = z.object({
   /** Líneas de la sección PROMOCIÓN que aplican a este tratamiento. */
   promo: z.array(z.string().trim().min(1)),
   schedules: z.array(ScheduleRowSchema),
+  /** Los criterios pueden cambiar por tratamiento dentro de la misma clínica. */
+  qualification: QualificationSchema,
   /** Agendamiento a más de 72 horas. */
   longTermBooking: YesNo,
   /** Pausa de ISA para este tratamiento. */
   pause: PeriodSchema.nullable(),
 });
 export type ClinicTreatment = z.infer<typeof ClinicTreatmentSchema>;
-
-/** Criterios de financiación por tipo de documento. */
-export const QualificationSchema = z.object({
-  dni: OptionalText,
-  nie: OptionalText,
-  pasaporte: OptionalText,
-  /** Texto cuando no se cualifica por documento ("No cualificamos, solo confirmar…"). */
-  note: OptionalText,
-});
-export type Qualification = z.infer<typeof QualificationSchema>;
 
 export const ClinicLocationSchema = z.object({
   name: z.string().trim().min(1),
@@ -81,7 +83,6 @@ export const ClinicSchema = z.object({
   reference: OptionalText,
   /** Sedes adicionales, en fichas con varias. */
   locations: z.array(ClinicLocationSchema),
-  qualification: QualificationSchema,
   financing: OptionalText,
   aid: OptionalText,
   insurance: OptionalText,
