@@ -1,0 +1,32 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+/build
+
+# logs
+*.log
+
+# env files
+.env*
+!.env.example
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# local & temporary files
+.DS_Store
+*.pem
+.claude/
+*.zip
+.local/
+
+# Datos reales de la Master: nunca en el repositorio. Solo fixtures anonimizadas.
+*.xlsx
+fixtures/private/

@@ -1,0 +1,11 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "apphosting": {
+    "backendId": "omniscripts-isa",
+    "rootDir": "/",
+    "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "fixtures", "docs"]
+  }
+}

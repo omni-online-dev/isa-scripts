@@ -1,0 +1,23 @@
+# Firebase App Hosting (Cloud Run). Claves válidas en runConfig:
+#   cpu, memoryMiB, maxInstances, minInstances, concurrency, vpcAccess
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  cpu: 1
+  memoryMiB: 512
+
+# Las variables se completan en WP-01, cuando exista el proyecto "OmniScripts ISA".
+# env:
+#   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+#     value: ...
+#     availability: [ BUILD, RUNTIME ]
+#   - variable: MASTER_SPREADSHEET_ID
+#     value: ...
+#     availability: [ RUNTIME ]
+#   - variable: DATA_NAMESPACE
+#     value: prod
+#     availability: [ RUNTIME ]
+#   - variable: SYNC_SECRET
+#     secret: SYNC_SECRET
+#   - variable: CRON_SECRET
+#     secret: CRON_SECRET
