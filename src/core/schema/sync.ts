@@ -12,6 +12,8 @@ export const ISSUE_CODES = [
   // Estructura de la hoja: detienen la sincronización.
   "missing_required_column",
   "sheet_not_found",
+  /** La publicación eliminaría demasiadas clínicas de golpe: se detiene por seguridad. */
+  "suspicious_drop",
   // Activos
   "new_column_detected",
   "row_without_treatment",
@@ -34,6 +36,7 @@ export type IssueCode = z.infer<typeof IssueCodeSchema>;
 export const BLOCKING_ISSUE_CODES: readonly IssueCode[] = [
   "missing_required_column",
   "sheet_not_found",
+  "suspicious_drop",
 ];
 
 /** Una línea del informe de calidad. */
