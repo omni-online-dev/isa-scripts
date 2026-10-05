@@ -13,7 +13,7 @@ export function stripPostalCode(address: string): string {
 
 /** Comienzos de referencia que ya son una indicación completa y no necesitan "muy cerca de". */
 const SELF_CONTAINED_REFERENCE =
-  /^(cerca|muy cerca|enfrente|frente|justo|al lado|junto|detr[aá]s|entre |en |a pie de calle|haciendo esquina|con |misma |a \d)/i;
+  /^(cerca|muy cerca|enfrente|frente|justo|al? lado|junto|detr[aá]s|delante|encima|arriba|debajo|entre |en |a pie de calle|haciendo esquina|esquina|con |mism[ao] |a \d)/i;
 
 /** "Estamos ubicados en **dirección**, referencia. ¿La zona te suena?" */
 export function locationSentence(address: string, reference: string | null): string {

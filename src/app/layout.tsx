@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Toaster } from "sonner";
+import { AuthProvider } from "@/lib/auth";
 import "./globals.css";
 
 // Fuente incluida en el proyecto: la compilación no depende de Google Fonts.
@@ -23,7 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} h-full antialiased`}>
-      <body className="h-full bg-surface font-sans">{children}</body>
+      <body className="h-full bg-surface font-sans">
+        <AuthProvider>{children}</AuthProvider>
+        <Toaster position="bottom-right" richColors />
+      </body>
     </html>
   );
 }
