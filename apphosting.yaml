@@ -6,18 +6,46 @@ runConfig:
   cpu: 1
   memoryMiB: 512
 
-# Las variables se completan en WP-01, cuando exista el proyecto "OmniScripts ISA".
-# env:
-#   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-#     value: ...
-#     availability: [ BUILD, RUNTIME ]
-#   - variable: MASTER_SPREADSHEET_ID
-#     value: ...
-#     availability: [ RUNTIME ]
-#   - variable: DATA_NAMESPACE
-#     value: prod
-#     availability: [ RUNTIME ]
-#   - variable: SYNC_SECRET
-#     secret: SYNC_SECRET
-#   - variable: CRON_SECRET
-#     secret: CRON_SECRET
+env:
+  # Configuración pública de la app web de Firebase (no son secretos).
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyDJBWzTYxO6yDWqIGg3n-qJtVW1fyXrQ7I
+    availability: [ BUILD, RUNTIME ]
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: omniscripts-isa.firebaseapp.com
+    availability: [ BUILD, RUNTIME ]
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: omniscripts-isa
+    availability: [ BUILD, RUNTIME ]
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:461029880687:web:03c43574811f61172eae9a
+    availability: [ BUILD, RUNTIME ]
+
+  # Espacio de datos. El backend de staging lo cambia a "staging" en su configuración.
+  - variable: NEXT_PUBLIC_DATA_NAMESPACE
+    value: prod
+    availability: [ BUILD, RUNTIME ]
+  - variable: DATA_NAMESPACE
+    value: prod
+    availability: [ RUNTIME ]
+
+  - variable: FIREBASE_PROJECT_ID
+    value: omniscripts-isa
+    availability: [ RUNTIME ]
+  - variable: MASTER_SOURCE
+    value: sheets
+    availability: [ RUNTIME ]
+  # PENDIENTE: id de la hoja de cálculo de la Master (lo que va entre /d/ y /edit en su URL).
+  - variable: MASTER_SPREADSHEET_ID
+    value: PENDIENTE
+    availability: [ RUNTIME ]
+  # Administradores de arranque, además de los que tengan rol admin en users/.
+  - variable: ADMIN_EMAILS
+    value: soporte@omnionline.es
+    availability: [ RUNTIME ]
+
+  # Secretos de Secret Manager.
+  - variable: SYNC_SECRET
+    secret: SYNC_SECRET
+  - variable: CRON_SECRET
+    secret: CRON_SECRET

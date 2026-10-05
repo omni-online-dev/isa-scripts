@@ -1,9 +1,55 @@
 rules_version = '2';
 
-// Todo cerrado por defecto. Las reglas de lectura para usuarios autenticados
-// llegan con WP-12, junto con sus tests en el emulador.
+// OmniScripts ISA
+// - Solo el servidor (Admin SDK, que no pasa por estas reglas) escribe los datos de la Master.
+// - Leer exige sesión con correo verificado y estar en users/{correo} con active != false.
+// - La lista de personas autorizadas la gestionan quienes tienen role == "admin".
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email_verified == true;
+    }
+
+    function me() {
+      return get(/databases/$(database)/documents/users/$(request.auth.token.email)).data;
+    }
+
+    function isUser() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.token.email))
+        && me().get('active', true) != false;
+    }
+
+    function isAdmin() {
+      return isUser() && me().role == 'admin';
+    }
+
+    // Personas autorizadas. El id del documento es el correo en minúsculas.
+    match /users/{email} {
+      allow get: if signedIn() && request.auth.token.email == email;
+      allow list: if isAdmin();
+      // Nadie puede quitarse a sí mismo el rol ni borrarse: evita quedarse sin administradores.
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['role', 'active'])
+        && request.resource.data.role in ['agent', 'admin'];
+      allow update: if isAdmin() && request.auth.token.email != email
+        && request.resource.data.keys().hasOnly(['role', 'active'])
+        && request.resource.data.role in ['agent', 'admin'];
+      allow delete: if isAdmin() && request.auth.token.email != email;
+    }
+
+    // Datos publicados, por espacio (prod / staging).
+    match /env/{ns}/clinics/{clinicId} {
+      allow read: if isUser();
+    }
+    match /env/{ns}/meta/current {
+      allow read: if isUser();
+    }
+
+    // Todo lo demás (historial, copias, cerrojo) solo lo toca el servidor.
     match /{document=**} {
       allow read, write: if false;
     }

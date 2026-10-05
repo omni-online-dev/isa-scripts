@@ -1,4 +1,5 @@
 import { applicationDefault, getApps, initializeApp, type App } from "firebase-admin/app";
+import { getAuth, type Auth } from "firebase-admin/auth";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 
 /** ID del proyecto: el de Firebase o, en Cloud Run / App Hosting, el de Google Cloud. */
@@ -12,4 +13,8 @@ function adminApp(): App {
 
 export function getAdminDb(): Firestore {
   return getFirestore(adminApp());
+}
+
+export function getAdminAuth(): Auth {
+  return getAuth(adminApp());
 }

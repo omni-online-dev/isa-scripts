@@ -27,10 +27,18 @@ npm run build
 
 | Paquete | Estado |
 |---|---|
-| WP-02 Andamiaje | Hecho |
-| WP-03 Esquemas, lista blanca y diccionario de etiquetas | Hecho (pendiente de revisión) |
-| WP-01 Provisión de Google Cloud y Firebase | Hecho, salvo App Hosting y Authentication |
-| WP-04 Fixtures anonimizadas de la Master | Hecho (la salida de referencia de la app actual llega con WP-07) |
-| WP-05 Parser de Activos | Hecho |
-| WP-06 Parser de fichas | Hecho |
-| WP-07 en adelante | Pendiente |
+| WP-01 Provisión de Google Cloud y Firebase | Hecho, salvo App Hosting, Authentication y compartir la Master |
+| WP-02 Andamiaje · WP-03 Contratos | Hecho |
+| WP-04 Fixtures · WP-05 Parser de Activos · WP-06 Parser de fichas | Hecho |
+| WP-07 Motor de guiones | Hecho |
+| WP-08 Sincronización · WP-09 Disparadores | Hecho en código; sin probar contra Sheets y Firestore reales |
+| WP-10 Diseño · WP-13 Guion · WP-14 Ficha · WP-15 Tiempo real | Hecho; probado en modo local |
+| WP-11 Autenticación · WP-12 Reglas | Hecho en código y reglas publicadas; faltan los tests con emulador |
+| WP-16 Administración | Hecho; probado en modo local |
+| WP-17 a WP-24 (conciliación, QA, UAT, producción) | Pendiente |
+
+## Modo local
+
+Sin variables de Firebase en `.env.local`, la app no pide sesión y lee los datos de
+`fixtures/private/master.json` (volcado de la Master real, ignorado por git) o, si no existe,
+de `fixtures/demo-master.json` (Master ficticia).

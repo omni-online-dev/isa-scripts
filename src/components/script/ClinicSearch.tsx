@@ -94,7 +94,8 @@ export function ClinicSearch({ clinics, selected, onSelect, autoFocus, size = "m
         value={query}
         placeholder={selected && !open ? selected.name : "Buscar clínica…"}
         onChange={(event) => {
-          setQuery(event.target.value);
+          // «/» es el atajo para enfocar: si el buscador ya tenía el foco, no se escribe.
+          setQuery(event.target.value.replace(/^\//, ""));
           setActive(0);
           setOpen(true);
         }}

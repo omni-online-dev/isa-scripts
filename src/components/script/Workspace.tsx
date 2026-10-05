@@ -179,7 +179,7 @@ export function Workspace({ dataset, header }: { dataset: Extract<Dataset, { sta
       {header}
       <div className="sticky top-0 z-10 border-b border-line bg-white/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-3 px-4 py-3 lg:px-6">
-          <div className="w-full sm:w-80">
+          <div className="w-full sm:w-72">
             <ClinicSearch clinics={clinics} selected={clinic} onSelect={select} />
           </div>
           {available.length > 1 && (
@@ -197,7 +197,7 @@ export function Workspace({ dataset, header }: { dataset: Extract<Dataset, { sta
             options={CALL_KINDS.map((value) => ({ value, label: CALL_KIND_LABELS[value] }))}
           />
           <div className="ml-auto flex items-center gap-4">
-            <span className="hidden xl:block">{status}</span>
+            <span className="hidden 2xl:block">{status}</span>
             <CopyButton text={scriptToPlainText(script, clinic.name)} />
           </div>
         </div>
