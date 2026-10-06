@@ -97,7 +97,7 @@ El secreto va en una **cabecera**, nunca en la URL (las URL quedan en los regist
 ```bash
 gcloud scheduler jobs create http sync-master \
   --project=omniscripts-isa \
-  --location=europe-west1 \
+  --location=europe-west4 \
   --schedule="*/15 * * * *" \
   --time-zone="Europe/Madrid" \
   --uri="https://<dominio-de-la-app>/api/cron/sync-master" \
@@ -107,7 +107,7 @@ gcloud scheduler jobs create http sync-master \
 ```
 
 - `<CRON_SECRET>` es el valor del secreto de Secret Manager (`gcloud secrets versions access latest --secret=CRON_SECRET`). No lo dejes en el historial de la terminal ni en un script.
-- Cloud Scheduler no existe en todas las regiones; `europe-west1` es la más cercana a `europe-west4`.
+- Cloud Scheduler no existe en todas las regiones; `europe-west4` es la más cercana a `europe-west4`.
 - Para cambiar el secreto: `gcloud scheduler jobs update http sync-master --update-headers="Authorization=Bearer <nuevo>"`.
 - Una respuesta `500` o `409` marca la ejecución como fallida en Scheduler; la siguiente pasada (15 min) lo vuelve a intentar.
 

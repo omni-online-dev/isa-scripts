@@ -47,5 +47,7 @@ env:
   # Secretos de Secret Manager.
   - variable: SYNC_SECRET
     secret: SYNC_SECRET
+    availability: [ RUNTIME ]
   - variable: CRON_SECRET
     secret: CRON_SECRET
+    availability: [ RUNTIME ]
