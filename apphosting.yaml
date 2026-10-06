@@ -35,9 +35,9 @@ env:
   - variable: MASTER_SOURCE
     value: sheets
     availability: [ RUNTIME ]
-  # PENDIENTE: id de la hoja de cálculo de la Master (lo que va entre /d/ y /edit en su URL).
+  # Id de la hoja de cálculo de la Master (lo que va entre /d/ y /edit en su URL).
   - variable: MASTER_SPREADSHEET_ID
-    value: PENDIENTE
+    value: 1qvhOV9fu1Yu4eK_ELO6BLazImUwhCRDR7mYYoFiXZUg
     availability: [ RUNTIME ]
   # Administradores de arranque, además de los que tengan rol admin en users/.
   - variable: ADMIN_EMAILS
