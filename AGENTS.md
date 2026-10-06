@@ -12,7 +12,7 @@ Herramienta interna de Omni Dental. Los agentes del call center (ISA) la usan en
 
 ## Arquitectura en una frase
 
-`Master → /api/sync → src/core/master (parser) → Zod → Firestore → interfaz en tiempo real`.
+`Master → comprobación cada minuto (/api/cron) → src/core/master (parser) → Zod → Firestore → interfaz en tiempo real`. La Master no admite scripts: nunca se instala nada dentro de la hoja (docs/adr/0003).
 
 ## Fronteras entre carpetas
 

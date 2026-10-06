@@ -7,6 +7,11 @@ import { SHEETS, resolveActivosColumns } from "@/core/master/mapping";
 /** Capa de lectura de la Master. La sincronización no sabe de dónde salen los datos. */
 export interface MasterSource {
   read(): Promise<MasterInput>;
+  /**
+   * Fecha de la última modificación de la hoja (ISO), o null si no se puede saber.
+   * Permite comprobar cada minuto si hay cambios sin leer la hoja entera.
+   */
+  modifiedTime(): Promise<string | null>;
 }
 
 /** Falta una pestaña de la Master. La sincronización lo convierte en `sheet_not_found`. */
@@ -99,6 +104,8 @@ export function toMasterInput(spreadsheet: sheets_v4.Schema$Spreadsheet): Master
 }
 
 const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly";
+/** Solo metadatos del archivo (fecha de modificación); no da acceso al contenido. */
+const DRIVE_METADATA_SCOPE = "https://www.googleapis.com/auth/drive.metadata.readonly";
 
 /** Solo lo necesario: texto, valor y formato de fecha, y enlaces. */
 const FIELDS =
@@ -114,6 +121,16 @@ function missingSheet(error: unknown): string | null {
 /** Lee la Master con la cuenta de servicio del backend (solo lectura). */
 export class SheetsMasterSource implements MasterSource {
   constructor(private readonly spreadsheetId: string) {}
+
+  async modifiedTime(): Promise<string | null> {
+    const auth = new google.auth.GoogleAuth({ scopes: [DRIVE_METADATA_SCOPE] });
+    const file = await google.drive({ version: "v3", auth }).files.get({
+      fileId: this.spreadsheetId,
+      fields: "modifiedTime",
+      supportsAllDrives: true,
+    });
+    return file.data.modifiedTime ?? null;
+  }
 
   async read(): Promise<MasterInput> {
     const auth = new google.auth.GoogleAuth({ scopes: [SHEETS_SCOPE] });
@@ -141,6 +158,10 @@ const isSheet = (value: unknown): value is SheetData =>
 /** Desarrollo local: lee un JSON con la forma de `MasterInput`. Misma lista blanca. */
 export class FileMasterSource implements MasterSource {
   constructor(private readonly file: string) {}
+
+  async modifiedTime(): Promise<string | null> {
+    return (await fs.stat(this.file)).mtime.toISOString();
+  }
 
   async read(): Promise<MasterInput> {
     const parsed: unknown = JSON.parse(await fs.readFile(this.file, "utf8"));

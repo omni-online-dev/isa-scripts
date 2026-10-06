@@ -41,6 +41,9 @@ export interface ClinicStore {
   listRuns(limit: number): Promise<StoredRun[]>;
   getSnapshot(version: number): Promise<Snapshot | null>;
   /** false si otra sincronización tiene el cerrojo. Caduca solo a los `ttlMs`. */
+  /** Fecha de modificación de la hoja que ya se procesó. null si nunca se ha comprobado. */
+  getWatermark(): Promise<string | null>;
+  setWatermark(modifiedTime: string): Promise<void>;
   acquireLock(ttlMs: number): Promise<boolean>;
   releaseLock(): Promise<void>;
 }
@@ -53,6 +56,15 @@ export class MemoryClinicStore implements ClinicStore {
   private clinics = new Map<string, Clinic>();
   private current: { version: number; checksum: string } | null = null;
   private lockedUntil = 0;
+  private watermark: string | null = null;
+
+  async getWatermark(): Promise<string | null> {
+    return this.watermark;
+  }
+
+  async setWatermark(modifiedTime: string): Promise<void> {
+    this.watermark = modifiedTime;
+  }
 
   async getCurrent(): Promise<PublishedState | null> {
     return this.current && structuredClone({ ...this.current, clinics: [...this.clinics.values()] });
@@ -123,6 +135,18 @@ export class FirestoreClinicStore implements ClinicStore {
   }
   private get lock() {
     return this.root.collection("meta").doc("lock");
+  }
+  private get watch() {
+    return this.root.collection("meta").doc("watch");
+  }
+
+  async getWatermark(): Promise<string | null> {
+    const value = (await this.watch.get()).data()?.modifiedTime;
+    return typeof value === "string" ? value : null;
+  }
+
+  async setWatermark(modifiedTime: string): Promise<void> {
+    await this.watch.set({ modifiedTime });
   }
 
   async getCurrent(): Promise<PublishedState | null> {

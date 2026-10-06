@@ -44,10 +44,7 @@ env:
     value: soporte@omnionline.es
     availability: [ RUNTIME ]
 
-  # Secretos de Secret Manager.
-  - variable: SYNC_SECRET
-    secret: SYNC_SECRET
-    availability: [ RUNTIME ]
+  # Secreto de Secret Manager: lo envía Cloud Scheduler en cada comprobación.
   - variable: CRON_SECRET
     secret: CRON_SECRET
     availability: [ RUNTIME ]

@@ -14,7 +14,7 @@ import {
   stableStringify,
 } from "./sync";
 
-const sourceOf = (input: MasterInput): MasterSource => ({ read: async () => input });
+const sourceOf = (input: MasterInput): MasterSource => ({ read: async () => input, modifiedTime: async () => null });
 const fixtureSource = sourceOf(masterFixture);
 const expected = parseMaster(masterFixture).clinics;
 
@@ -130,6 +130,7 @@ describe("runSync", () => {
   it("si desaparece una pestaña se bloquea con `sheet_not_found`", async () => {
     const store = await published();
     const source: MasterSource = {
+      modifiedTime: async () => null,
       read: async () => {
         throw new MasterSheetNotFoundError("Horarios ");
       },
@@ -159,6 +160,7 @@ describe("runSync", () => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     const store = await published();
     const source: MasterSource = {
+      modifiedTime: async () => null,
       read: async () => {
         throw new Error("credenciales caducadas");
       },
